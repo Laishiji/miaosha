@@ -1,7 +1,9 @@
 package com.laishiji.miaosha.dao;
 
 import com.laishiji.miaosha.dataobject.UserPasswordDO;
+import org.springframework.stereotype.Repository;
 
+@Repository
 public interface UserPasswordDOMapper {
     int deleteByPrimaryKey(Integer id);
 
