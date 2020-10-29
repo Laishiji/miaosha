@@ -1,23 +1,116 @@
 package com.laishiji.miaosha.controller;
 
+import com.alibaba.druid.util.StringUtils;
 import com.laishiji.miaosha.controller.viewobject.UserVO;
 import com.laishiji.miaosha.error.BusinessException;
 import com.laishiji.miaosha.error.EnumBusinessError;
 import com.laishiji.miaosha.response.CommonReturnType;
 import com.laishiji.miaosha.service.UserService;
 import com.laishiji.miaosha.service.model.UserModel;
+import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import sun.misc.BASE64Encoder;
+
 import javax.annotation.Resource;
+import javax.servlet.http.HttpServletRequest;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.Random;
 
 @Controller
 @RequestMapping("/user")
+@CrossOrigin(allowCredentials="true", allowedHeaders = "*")//跨域请求
 public class UserController extends CommonController{
 
     @Resource(name="userService")
     private UserService userService;
 
+    /**
+     * 用户注册接口
+     * @param telphone
+     * @param otpCode
+     * @param name
+     * @param gender
+     * @param age
+     * @param password
+     * @param request
+     * @return
+     * @throws BusinessException
+     */
+    @RequestMapping(value = "/register", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    @ResponseBody
+    public CommonReturnType register(@RequestParam(name = "telphone")String telphone,
+                                     @RequestParam(name = "otpCode")String otpCode,
+                                     @RequestParam(name = "name")String name,
+                                     @RequestParam(name = "gender")Integer gender,
+                                     @RequestParam(name = "age")Integer age,
+                                     @RequestParam(name = "password")String password,
+                                     HttpServletRequest request) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+        //1.验证手机号与对应的otpCode是否符合
+        String inSessionOtpCode = (String) request.getSession().getAttribute(telphone);
+        if(!StringUtils.equals(otpCode, inSessionOtpCode)){
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR, "验证码错误");
+        }
+        //2.符合则进入注册流程
+        UserModel userModel = new UserModel();
+        userModel.setName(name);
+        userModel.setTelphone(telphone);
+        userModel.setAge(age);
+        userModel.setGender(new Byte(String.valueOf(gender.intValue())));
+        userModel.setRegisterMode("by phone");
+        userModel.setEncryptPassword(encodeByMD5(password));
+
+        userService.register(userModel);
+        return CommonReturnType.create(null);
+    }
+
+    /**
+     * 加密密码
+     * @param password
+     * @return
+     * @throws NoSuchAlgorithmException
+     * @throws UnsupportedEncodingException
+     */
+    public String encodeByMD5(String password) throws NoSuchAlgorithmException, UnsupportedEncodingException {
+        //确定计算方法
+        MessageDigest md5 = MessageDigest.getInstance("MD5");
+        BASE64Encoder base64Encoder = new BASE64Encoder();
+        //加密字符串
+        String encryptPassword = base64Encoder.encode(md5.digest(password.getBytes("utf-8")));
+        return encryptPassword;
+    }
+
+    /**
+     * 用户获取otp短信的接口
+     * @param telphone
+     * @param request
+     * @return
+     */
+    @RequestMapping(value = "/getotp", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    @ResponseBody
+    public CommonReturnType getOtp(@RequestParam(name="telphone")String telphone, HttpServletRequest request){
+        //1.随机生成6位otp验证码
+        Random random = new Random();
+        Integer randomInt = 100000 + random.nextInt(899999);
+        String otpCode = randomInt.toString();
+        //2.将otp验证码同对应的手机号关联, 企业级应用中常将{telphone: otpCode}存入Redis服务器中
+        //此处暂时使用HttpSession的方式绑定otpCode和telphone
+        request.getSession().setAttribute(telphone, otpCode);
+        //3.将otp验证码通过短信通道发送给用户，本项目省略
+        System.out.println("手机号： "+telphone+" 验证码： "+otpCode);
+        return CommonReturnType.create(null);
+
+    }
+
+    /**
+     * 获取用户信息的接口
+     * @param id
+     * @return
+     * @throws BusinessException
+     */
     @RequestMapping("/get")
     @ResponseBody
     public CommonReturnType getUser(@RequestParam("id") Integer id) throws BusinessException {
@@ -31,7 +124,7 @@ public class UserController extends CommonController{
         }
 
         //将核心领域模型用户对象转化为可供UI使用的viewobject
-        UserVO userVO =  convertFromModel(userModel);
+        UserVO userVO = convertFromModel(userModel);
         //归一化处理，返回通用对象
         return CommonReturnType.create(userVO);
     }

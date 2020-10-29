@@ -1,5 +1,6 @@
 package com.laishiji.miaosha.service;
 
+import com.laishiji.miaosha.error.BusinessException;
 import com.laishiji.miaosha.service.model.UserModel;
 
 public interface UserService {
@@ -9,4 +10,10 @@ public interface UserService {
      * @return usermodel
      */
     UserModel getUserById(Integer id);
+
+    /**
+     * 注册
+     * @param userModel
+     */
+    void register(UserModel userModel) throws BusinessException;
 }

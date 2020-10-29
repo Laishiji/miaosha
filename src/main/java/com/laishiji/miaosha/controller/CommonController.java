@@ -16,6 +16,9 @@ import java.util.Map;
  * 该Controller定义所有Controller通用的方法，其他Controller需要继承该类
  */
 public class CommonController {
+
+    public static final String CONTENT_TYPE_FORMED = "application/x-www-form-urlencoded";
+
     /**
      * 定义异常处理器捕获处理Controller向上抛出的异常
      * @param request

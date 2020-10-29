@@ -11,7 +11,7 @@ import lombok.Setter;
 public class UserVO {
     private Integer id;
     private String name;
-    private Boolean gender;
+    private Byte gender;
     private Integer age;
     private String telphone;
 }
