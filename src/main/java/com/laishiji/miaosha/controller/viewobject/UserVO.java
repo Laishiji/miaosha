@@ -1,25 +1,17 @@
-package com.laishiji.miaosha.dataobject;
+package com.laishiji.miaosha.controller.viewobject;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * 定义简单的pojo类，仅用于ORM
+ * 简单的pojo类，用于返回给前端的用户对象，只返回用户对象的部分属性
  */
-@Getter
 @Setter
-public class UserDO {
+@Getter
+public class UserVO {
     private Integer id;
-
     private String name;
-
     private Boolean gender;
-
     private Integer age;
-
     private String telphone;
-
-    private String registerMode;
-
-    private String thirdPartyId;
 }

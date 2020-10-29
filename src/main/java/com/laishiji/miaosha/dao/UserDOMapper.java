@@ -3,7 +3,7 @@ package com.laishiji.miaosha.dao;
 import com.laishiji.miaosha.dataobject.UserDO;
 import org.springframework.stereotype.Repository;
 
-@Repository
+@Repository("userDOMapper")
 public interface UserDOMapper {
     int deleteByPrimaryKey(Integer id);
 
