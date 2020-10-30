@@ -36,7 +36,7 @@
     where id = #{id,jdbcType=INTEGER}
   </delete>
 
-  <insert id="insert" parameterType="com.laishiji.miaosha.dataobject.UserDO">
+  <insert id="insert" keyProperty="id" useGeneratedKeys="true" parameterType="com.laishiji.miaosha.dataobject.UserDO">
     insert into user_info (id, name, gender, 
       age, telphone, register_mode, 
       third_party_id)
@@ -45,7 +45,7 @@
       #{thirdPartyId,jdbcType=VARCHAR})
   </insert>
   <!--使用useGeneratedKeys和keyProperty属性获取自增长ID并将其封装给pojo对应的成员变量id，这两个属性仅适用于insert和update标签-->
-  <insert id="insertSelective" parameterType="com.laishiji.miaosha.dataobject.UserDO" keyProperty="id" useGeneratedKeys="true">
+  <insert id="insertSelective" keyProperty="id" parameterType="com.laishiji.miaosha.dataobject.UserDO" useGeneratedKeys="true">
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">
       <if test="id != null">

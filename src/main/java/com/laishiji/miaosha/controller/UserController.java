@@ -19,9 +19,9 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
 
-@Controller
+@Controller("user")
 @RequestMapping("/user")
-@CrossOrigin(allowCredentials="true", allowedHeaders = "*")//跨域请求
+@CrossOrigin(allowCredentials = "true", origins = {"*"})//跨域请求
 public class UserController extends CommonController{
 
     @Resource(name="userService")

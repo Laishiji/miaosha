@@ -10,8 +10,9 @@ import javax.validation.constraints.NotNull;
 
 
 /**
- * SpringMVC中我们用于进行业务逻辑处理的Model概念，
- * datoobject中只是定义简单的pojo类，仅用于ORM
+ * 商品模型。
+ * SpringMVC中我们用于进行业务逻辑处理的Model概念。
+ * datoobject中只是定义简单的pojo类，仅用于ORM。
  */
 @Setter
 @Getter

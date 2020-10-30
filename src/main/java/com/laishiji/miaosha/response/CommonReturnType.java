@@ -19,7 +19,7 @@ public class CommonReturnType {
     private Object data;
 
     /**
-     * 返回正确信息
+     * 使用方法重载的方式，默认返回正确信息，只在异常处理时调用另一个重载方法
      * @param result
      * @return
      */
