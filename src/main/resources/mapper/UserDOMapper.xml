@@ -23,6 +23,14 @@
     where id = #{id,jdbcType=INTEGER}
   </select>
 
+  <!--添加通过手机号查询用户信息-->
+  <select id="selectByTelphone" resultMap="BaseResultMap">
+    select
+    <include refid="Base_Column_List" />
+    from user_info
+    where telphone = #{telphone,jdbcType=VARCHAR}
+  </select>
+
   <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer">
     delete from user_info
     where id = #{id,jdbcType=INTEGER}
@@ -36,6 +44,7 @@
       #{age,jdbcType=INTEGER}, #{telphone,jdbcType=VARCHAR}, #{registerMode,jdbcType=VARCHAR}, 
       #{thirdPartyId,jdbcType=VARCHAR})
   </insert>
+  <!--使用useGeneratedKeys和keyProperty属性获取自增长ID并将其封装给pojo对应的成员变量id，这两个属性仅适用于insert和update标签-->
   <insert id="insertSelective" parameterType="com.laishiji.miaosha.dataobject.UserDO" keyProperty="id" useGeneratedKeys="true">
     insert into user_info
     <trim prefix="(" suffix=")" suffixOverrides=",">

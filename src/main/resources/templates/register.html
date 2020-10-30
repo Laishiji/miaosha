@@ -1,6 +1,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>Register</title>
     <link href="../static/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="../static/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
     <link href="../static/assets/admin/pages/css/login.css" rel="stylesheet" type="text/css"/>
@@ -113,12 +114,13 @@
                 success:function(data){
                     if(data.status == "success"){
                         alert("注册成功");
+                        window.location.href="./login.html";
                     }else{
-                        alert("注册失败，原因为"+data.data.errorMessage);
+                        alert("注册失败，原因为："+data.data.errorMessage);
                     }
                 },
                 error:function(data){
-                    alert("注册失败，原因为"+data.responseText);
+                    alert("注册失败，原因为："+data.responseText);
                 }
             });
 

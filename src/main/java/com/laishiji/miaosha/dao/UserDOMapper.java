@@ -13,6 +13,9 @@ public interface UserDOMapper {
 
     UserDO selectByPrimaryKey(Integer id);
 
+    //添加通过手机号查询用户信息
+    UserDO selectByTelphone(String telphone);
+
     int updateByPrimaryKeySelective(UserDO record);
 
     int updateByPrimaryKey(UserDO record);

@@ -16,4 +16,11 @@ public interface UserService {
      * @param userModel
      */
     void register(UserModel userModel) throws BusinessException;
+
+    /**
+     * 登录验证接口,密码为加密后的
+     * @param telphone
+     * @param encryptPassword
+     */
+    UserModel validateLogin(String telphone, String encryptPassword) throws BusinessException;
 }

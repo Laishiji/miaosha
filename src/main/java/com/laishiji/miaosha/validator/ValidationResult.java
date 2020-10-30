@@ -5,11 +5,14 @@ import org.apache.commons.lang3.StringUtils;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * 校验结果
+ */
 public class ValidationResult {
     //校验结果是否有错
     private boolean hasErrors = false;
 
-    //存放错误信息的map
+    //存放错误信息的map，JavaBean可能有多个字段错误，因此用map
     private Map<String,String> errorMsgMap = new HashMap<>();
 
     public boolean isHasErrors() {

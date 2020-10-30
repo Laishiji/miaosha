@@ -7,7 +7,6 @@ import com.laishiji.miaosha.error.EnumBusinessError;
 import com.laishiji.miaosha.response.CommonReturnType;
 import com.laishiji.miaosha.service.UserService;
 import com.laishiji.miaosha.service.model.UserModel;
-import org.apache.tomcat.util.security.MD5Encoder;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -29,6 +28,32 @@ public class UserController extends CommonController{
     private UserService userService;
 
     /**
+     * 用户登录验证接口
+     * @param telphone
+     * @param password
+     * @return
+     * @throws BusinessException
+     */
+    @RequestMapping(value = "/login", method = {RequestMethod.POST}, consumes = {CONTENT_TYPE_FORMED})
+    @ResponseBody
+    public CommonReturnType login(@RequestParam(name = "telphone")String telphone,
+                                  @RequestParam(name = "password")String password,
+                                  HttpServletRequest request) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
+        //1.参数校验
+        if(StringUtils.isEmpty(telphone) || StringUtils.isEmpty(password)){
+            throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR);
+        }
+
+        //2.校验登录是否合法
+        UserModel userModel = userService.validateLogin(telphone,encodeByMD5(password));
+
+        //3.将登录凭证和用户信息加入到用户登录成功的session内，此处为单点登录
+        request.getSession().setAttribute("IS_LOGIN",true);
+        request.getSession().setAttribute("LOGIN_USER", userModel);
+        return CommonReturnType.create(null);
+    }
+
+    /**
      * 用户注册接口
      * @param telphone
      * @param otpCode
@@ -45,7 +70,7 @@ public class UserController extends CommonController{
     public CommonReturnType register(@RequestParam(name = "telphone")String telphone,
                                      @RequestParam(name = "otpCode")String otpCode,
                                      @RequestParam(name = "name")String name,
-                                     @RequestParam(name = "gender")Integer gender,
+                                     @RequestParam(name = "gender")String gender,
                                      @RequestParam(name = "age")Integer age,
                                      @RequestParam(name = "password")String password,
                                      HttpServletRequest request) throws BusinessException, UnsupportedEncodingException, NoSuchAlgorithmException {
@@ -59,11 +84,11 @@ public class UserController extends CommonController{
         userModel.setName(name);
         userModel.setTelphone(telphone);
         userModel.setAge(age);
-        userModel.setGender(new Byte(String.valueOf(gender.intValue())));
+        userModel.setGender(new Byte(String.valueOf(gender=="男" ? 1 : 2)));
         userModel.setRegisterMode("by phone");
         userModel.setEncryptPassword(encodeByMD5(password));
-
         userService.register(userModel);
+
         return CommonReturnType.create(null);
     }
 

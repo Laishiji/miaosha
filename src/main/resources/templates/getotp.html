@@ -1,6 +1,7 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <title>获取验证码</title>
     <link href="../static/assets/global/plugins/bootstrap/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
     <link href="../static/assets/global/css/components.css" rel="stylesheet" type="text/css"/>
     <link href="../static/assets/admin/pages/css/login.css" rel="stylesheet" type="text/css"/>
@@ -49,11 +50,12 @@
                        alert("otp已经发送到了您的手机上，请注意查收");
                        window.location.href="./register.html";
                    }else{
-                       alert("otp发送失败，原因为"+data.data.errorMessage);
+                       alert("otp发送失败，原因为："+data.data.errorMessage);
                    }
                },
+               //网络原因错误会进入到error
                error:function(data){
-                   alert("otp发送失败，原因为"+data.responseText);
+                   alert("otp发送失败，原因为："+data.responseText);
                }
            });
 
