@@ -24,6 +24,7 @@ public class OrderController extends CommonController{
     @ResponseBody
     public CommonReturnType createOrder(@RequestParam(name = "itemId")Integer itemId,
                                         @RequestParam(name = "amount") Integer amount,
+                                        @RequestParam(name = "promoId", required = false) Integer promoId,
                                         HttpServletRequest request) throws BusinessException {
         //获取用户登录信息
         Boolean isLogin = (Boolean) request.getSession().getAttribute("IS_LOGIN");
@@ -33,7 +34,7 @@ public class OrderController extends CommonController{
         UserModel userModel = (UserModel) request.getSession().getAttribute("LOGIN_USER");
 
         //创建订单
-        OrderModel orderModel = orderService.createOrder(userModel.getId(), itemId, amount);
+        OrderModel orderModel = orderService.createOrder(userModel.getId(), itemId, promoId, amount);
 
         return CommonReturnType.create(null);
     }

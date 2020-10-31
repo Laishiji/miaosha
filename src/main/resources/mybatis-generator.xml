@@ -14,7 +14,7 @@
 
         <!--配置数据库连接-->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
-                        connectionURL="jdbc:mysql://localhost:3306/miaosha?serverTimezone=UTC&amp;tinyInt1isBit=false"
+                        connectionURL="jdbc:mysql://localhost:3306/miaosha?tinyInt1isBit=false"
                         userId="root"
                         password="admin">
         </jdbcConnection>
@@ -56,7 +56,10 @@
 <!--        <table tableName="order_info" domainObjectName="OrderDO" enableCountByExample="false"-->
 <!--               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"-->
 <!--               selectByExampleQueryId="false"/>-->
-        <table tableName="sequence_info" domainObjectName="SequenceDO" enableCountByExample="false"
+<!--        <table tableName="sequence_info" domainObjectName="SequenceDO" enableCountByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+        <table tableName="promo" domainObjectName="PromoDO" enableCountByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"
                selectByExampleQueryId="false"/>
 

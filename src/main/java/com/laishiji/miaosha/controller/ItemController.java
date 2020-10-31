@@ -5,6 +5,7 @@ import com.laishiji.miaosha.error.BusinessException;
 import com.laishiji.miaosha.response.CommonReturnType;
 import com.laishiji.miaosha.service.ItemService;
 import com.laishiji.miaosha.service.model.ItemModel;
+import org.joda.time.format.DateTimeFormat;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -57,6 +58,17 @@ public class ItemController extends CommonController{
 
         ItemVO itemVO = new ItemVO();
         BeanUtils.copyProperties(itemModel, itemVO);
+
+        //如果有正在进行的秒杀活动则设置相关活动属性
+        if(itemModel.getPromoModel() != null){
+            itemVO.setPromoStatus(itemModel.getPromoModel().getStatus());
+            itemVO.setPromoId(itemModel.getPromoModel().getId());
+            itemVO.setStartDate(itemModel.getPromoModel().getStartDate().toString(DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss")));
+            itemVO.setPromoPrice(itemModel.getPromoModel().getPromoItemPrice());
+        }else{
+            itemVO.setPromoStatus(0);
+        }
+
         return itemVO;
     }
 

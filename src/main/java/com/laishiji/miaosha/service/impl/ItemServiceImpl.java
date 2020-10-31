@@ -7,7 +7,9 @@ import com.laishiji.miaosha.dataobject.ItemStockDO;
 import com.laishiji.miaosha.error.BusinessException;
 import com.laishiji.miaosha.error.EnumBusinessError;
 import com.laishiji.miaosha.service.ItemService;
+import com.laishiji.miaosha.service.PromoService;
 import com.laishiji.miaosha.service.model.ItemModel;
+import com.laishiji.miaosha.service.model.PromoModel;
 import com.laishiji.miaosha.validator.ValidationResult;
 import com.laishiji.miaosha.validator.ValidatorImpl;
 import org.springframework.beans.BeanUtils;
@@ -27,6 +29,9 @@ public class ItemServiceImpl implements ItemService {
 
     @Resource(name = "itemStockDOMapper")
     private ItemStockDOMapper itemStockDOMapper;
+
+    @Resource(name = "promoService")
+    private PromoService promoService;
 
     @Resource(name = "validator")
     private ValidatorImpl validator;
@@ -55,7 +60,13 @@ public class ItemServiceImpl implements ItemService {
         ItemStockDO itemStockDO = convertStockDOFromModel(itemModel);
         itemStockDOMapper.insertSelective(itemStockDO);
 
-        return getItemById(itemModel.getId());
+        //获取秒杀活动信息,如果还未结束则将活动信息聚合进商品模型
+        PromoModel promoModel = promoService.getPromoByItemId(itemModel.getId());
+        if(promoModel != null && promoModel.getStatus() != 3){
+            itemModel.setPromoModel(promoModel);
+        }
+
+        return itemModel;
     }
 
     /**
@@ -85,9 +96,19 @@ public class ItemServiceImpl implements ItemService {
     public ItemModel getItemById(Integer id) {
         ItemDO itemDO = itemDOMapper.selectByPrimaryKey(id);
         if(itemDO == null) return null;
+        //获取库存信息
         ItemStockDO itemStockDO = itemStockDOMapper.selectByItemId(itemDO.getId());
 
-        return convertModelFromDO(itemDO,itemStockDO);
+        //dataobject->model
+        ItemModel itemModel =  convertModelFromDO(itemDO,itemStockDO);
+
+        //获取秒杀活动信息,如果还未结束则将活动信息聚合进商品模型
+        PromoModel promoModel = promoService.getPromoByItemId(itemModel.getId());
+        if(promoModel != null && promoModel.getStatus() != 3){
+            itemModel.setPromoModel(promoModel);
+        }
+
+        return itemModel;
     }
 
     /**

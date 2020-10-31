@@ -17,4 +17,7 @@ public class OrderDO {
     private Integer amount;
 
     private Double orderPrice;
+
+    //增加秒杀活动id
+    private Integer promoId;
 }

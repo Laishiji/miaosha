@@ -39,9 +39,9 @@ public class OrderServiceImpl implements OrderService {
 
     @Override
     @Transactional
-    public OrderModel createOrder(Integer userId, Integer itemId, Integer amount) throws BusinessException {
+    public OrderModel createOrder(Integer userId, Integer itemId,Integer promoId, Integer amount) throws BusinessException {
 
-        //1.校验下单状态：用户是否合法？商品是否存在？购买数量是否正确？
+        //1.校验下单状态：用户是否合法？商品是否存在？购买数量是否正确？秒杀活动是否匹配该商品？
         ItemModel itemModel = itemService.getItemById(itemId);
         if(itemModel == null)
             throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR,"商品信息不存在");
@@ -53,6 +53,13 @@ public class OrderServiceImpl implements OrderService {
         if(amount <= 0 || amount >= 99)
             throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR,"数量信息不正确");
 
+        //校验秒杀活动信息
+        if(promoId != null){
+            if(promoId.intValue() != itemModel.getPromoModel().getId())
+                throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR,"活动信息不正确");
+            else if(itemModel.getPromoModel().getStatus().intValue() != 2)
+                throw new BusinessException(EnumBusinessError.PARAMETER_VALIDATION_ERROR,"活动未开始");
+        }
 
         //2.落单成功则减库存
         boolean result = itemService.decreaseStock(itemId,amount);
@@ -69,8 +76,15 @@ public class OrderServiceImpl implements OrderService {
         orderModel.setUserId(userId);
         orderModel.setItemId(itemId);
         orderModel.setAmount(amount);
-        orderModel.setItemPrice(itemModel.getPrice());
-        orderModel.setOrderPrice(itemModel.getPrice().multiply(new BigDecimal(amount)));
+
+        if(promoId != null){//如果有活动，则设置活动价格
+            orderModel.setItemPrice(itemModel.getPromoModel().getPromoItemPrice());
+        }else{
+            orderModel.setItemPrice(itemModel.getPrice());
+        }
+        orderModel.setOrderPrice(orderModel.getItemPrice().multiply(new BigDecimal(amount)));
+
+        orderModel.setPromoId(promoId);
         OrderDO orderDO = convertFromOrderModel(orderModel);
 
         //3.3订单入库
