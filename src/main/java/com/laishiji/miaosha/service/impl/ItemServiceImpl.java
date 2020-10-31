@@ -90,8 +90,28 @@ public class ItemServiceImpl implements ItemService {
         return convertModelFromDO(itemDO,itemStockDO);
     }
 
+    /**
+     * 扣减库存
+     * @param itemId
+     * @param amount
+     * @return
+     * @throws BusinessException
+     */
+    @Override
+    @Transactional
+    public boolean decreaseStock(Integer itemId, Integer amount){
+        //注意这里虽然可以通过itemId查询出stock，然后和amount比较后再判断是否update，但是这样会调用两次sql
+        //而现在使用的方式是直接通过一句sql就完成了‘判断’和‘减库存’两个操作，提升了效率
+        int affectedRow = itemStockDOMapper.decreaseStock(itemId, amount);
+        if(affectedRow > 0) return true;
+        return false;
+    }
 
-
+    @Override
+    @Transactional
+    public void increaseSales(Integer itemId, Integer amount) {
+        itemDOMapper.increaseSales(itemId,amount);
+    }
 
     private ItemModel convertModelFromDO(ItemDO itemDO, ItemStockDO itemStockDO) {
         ItemModel itemModel = new ItemModel();

@@ -64,6 +64,12 @@
     </trim>
   </insert>
 
+  <!--通过item_id更新库存-->
+  <update id="decreaseStock">
+    update item_stock set stock = stock - #{amount}
+    where item_id = #{itemId} and stock >= #{amount}
+  </update>
+
   <update id="updateByPrimaryKeySelective" parameterType="com.laishiji.miaosha.dataobject.ItemStockDO">
     update item_stock
     <set>

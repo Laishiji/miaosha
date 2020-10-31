@@ -62,7 +62,7 @@
     function reloadDom(){
         for(var i = 0; i < g_itemList.length; i++){
             var itemVO = g_itemList[i];
-            var dom = "<tr data-id='"+itemVO.id+"' id='itemDetail"+itemVO.id+"'><td>" + itemVO.title +"</td><td><img style='width: 100px;height: auto;' src='"+itemVO.imgUrl+"'/></td><td>"+itemVO.description+"</td><td>"+itemVO.price+"</td><td>"+itemVO.stock+"</td><td>"+itemVO.sales+"</td></tr>";
+            var dom = "<tr data-id='"+itemVO.id+"' id='itemDetail"+itemVO.id+"'><td>" + itemVO.title +"</td><td><img style='width:100px;height:auto' src='"+itemVO.imgUrl+"'/></td><td>"+itemVO.description+"</td><td>"+itemVO.price+"</td><td>"+itemVO.stock+"</td><td>"+itemVO.sales+"</td></tr>";
 
             $("#container").append($(dom));
 

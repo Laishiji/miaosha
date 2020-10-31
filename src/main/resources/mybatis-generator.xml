@@ -41,19 +41,24 @@
 
         <!--指定数据库每个表的生成策略,并禁止一些条件查询，
             实际生产中稍微复杂一点的条件查询自己编写即可-->
-        <table tableName="user_info" domainObjectName="UserDO" enableCountByExample="false"
+<!--        <table tableName="user_info" domainObjectName="UserDO" enableCountByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+<!--        <table tableName="user_password" domainObjectName="UserPasswordDO" enableCountByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+<!--        <table tableName="item" domainObjectName="ItemDO" enableCountByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+<!--        <table tableName="item_stock" domainObjectName="ItemStockDO" enableCountByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+<!--        <table tableName="order_info" domainObjectName="OrderDO" enableCountByExample="false"-->
+<!--               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"-->
+<!--               selectByExampleQueryId="false"/>-->
+        <table tableName="sequence_info" domainObjectName="SequenceDO" enableCountByExample="false"
                enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"
                selectByExampleQueryId="false"/>
-        <table tableName="user_password" domainObjectName="UserPasswordDO" enableCountByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"
-               selectByExampleQueryId="false"/>
-        <table tableName="item" domainObjectName="ItemDO" enableCountByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"
-               selectByExampleQueryId="false"/>
-        <table tableName="item_stock" domainObjectName="ItemStockDO" enableCountByExample="false"
-               enableDeleteByExample="false" enableSelectByExample="false" enableUpdateByExample="false"
-               selectByExampleQueryId="false"/>
-
 
     </context>
 </generatorConfiguration>
