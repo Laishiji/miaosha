@@ -15,7 +15,7 @@ import javax.servlet.http.HttpServletRequest;
 @Controller("order")
 @RequestMapping("/order")
 @CrossOrigin(allowCredentials = "true", origins = {"*"})//跨域请求
-public class OrderController extends CommonController{
+public class OrderController extends GlobalExceptionHandler{
 
     @Resource(name="orderService")
     private OrderService orderService;

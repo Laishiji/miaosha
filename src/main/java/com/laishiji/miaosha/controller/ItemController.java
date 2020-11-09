@@ -18,7 +18,7 @@ import java.util.List;
 @Controller("item")
 @RequestMapping("/item")
 @CrossOrigin(allowCredentials = "true", origins = {"*"})//跨域请求
-public class ItemController extends CommonController{
+public class ItemController extends GlobalExceptionHandler{
 
     @Resource(name="itemService")
     private ItemService itemService;

@@ -22,7 +22,7 @@ import java.util.Random;
 @Controller("user")
 @RequestMapping("/user")
 @CrossOrigin(allowCredentials = "true", origins = {"*"})//跨域请求
-public class UserController extends CommonController{
+public class UserController extends GlobalExceptionHandler{
 
     @Resource(name="userService")
     private UserService userService;
