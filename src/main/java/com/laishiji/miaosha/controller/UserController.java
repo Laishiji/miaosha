@@ -8,6 +8,8 @@ import com.laishiji.miaosha.response.CommonReturnType;
 import com.laishiji.miaosha.service.UserService;
 import com.laishiji.miaosha.service.model.UserModel;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import sun.misc.BASE64Encoder;
@@ -18,6 +20,8 @@ import java.io.UnsupportedEncodingException;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.util.Random;
+import java.util.UUID;
+import java.util.concurrent.TimeUnit;
 
 @Controller("user")
 @RequestMapping("/user")
@@ -26,6 +30,9 @@ public class UserController extends GlobalExceptionHandler {
 
     @Resource(name="userService")
     private UserService userService;
+
+    @Autowired
+    private RedisTemplate redisTemplate;
 
     /**
      * 用户登录验证接口
@@ -47,10 +54,21 @@ public class UserController extends GlobalExceptionHandler {
         //2.校验登录是否合法
         UserModel userModel = userService.validateLogin(telphone,encodeByMD5(password));
 
-        //3.将登录凭证和用户模型加入到用户登录成功的session内
-        request.getSession().setAttribute("IS_LOGIN",true);
-        request.getSession().setAttribute("LOGIN_USER", userModel);
-        return CommonReturnType.create(null);
+        //3.修改为使用token的方式，将token和用户模型一起存入redis中
+        //生成登录凭证token
+        String uuidToken = UUID.randomUUID().toString().replace("-","");
+        //建立token和用户登录态之间的联系
+        redisTemplate.opsForValue().set(uuidToken, userModel);
+        //设置超时时间
+        redisTemplate.expire(uuidToken, 1, TimeUnit.HOURS);
+
+        return CommonReturnType.create(uuidToken);
+
+
+//        //3.将登录凭证和用户模型加入到用户登录成功的session内
+//        request.getSession().setAttribute("IS_LOGIN",true);
+//        request.getSession().setAttribute("LOGIN_USER", userModel);
+//        return CommonReturnType.create(uuidToken);
     }
 
     /**

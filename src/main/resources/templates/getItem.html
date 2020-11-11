@@ -93,10 +93,18 @@
 
     jQuery(document).ready(function(){
         $("#createorder").on("click",function(){
+
+            var token = window.localStorage["token"];
+            if(token == null){
+                alert("没有登录，不能下单");
+                window.location.href="login.html";
+                return false;
+            }
+
             $.ajax({
                 type:"POST",
                 contentType:"application/x-www-form-urlencoded",
-                url:"http://"+g_host+"/order/create",
+                url:"http://"+g_host+"/order/create?token="+token,
                 data:{
                     "itemId":g_itemVO.id,
                     "amount":1,
