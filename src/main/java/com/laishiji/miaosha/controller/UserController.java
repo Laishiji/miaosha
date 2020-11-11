@@ -22,7 +22,7 @@ import java.util.Random;
 @Controller("user")
 @RequestMapping("/user")
 @CrossOrigin(allowCredentials = "true", origins = {"*"})//跨域请求
-public class UserController extends GlobalExceptionHandler{
+public class UserController extends GlobalExceptionHandler {
 
     @Resource(name="userService")
     private UserService userService;
@@ -47,7 +47,7 @@ public class UserController extends GlobalExceptionHandler{
         //2.校验登录是否合法
         UserModel userModel = userService.validateLogin(telphone,encodeByMD5(password));
 
-        //3.将登录凭证和用户信息加入到用户登录成功的session内，此处为单点登录
+        //3.将登录凭证和用户模型加入到用户登录成功的session内
         request.getSession().setAttribute("IS_LOGIN",true);
         request.getSession().setAttribute("LOGIN_USER", userModel);
         return CommonReturnType.create(null);
