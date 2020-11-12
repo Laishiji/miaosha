@@ -4,11 +4,12 @@ import lombok.Getter;
 import lombok.Setter;
 import org.joda.time.DateTime;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 @Setter
 @Getter
-public class PromoModel {
+public class PromoModel implements Serializable {
     private Integer id;
 
     //秒杀活动状态，为1表示还未开始，为2表示进行中，为3表示已结束
