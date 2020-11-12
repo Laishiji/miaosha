@@ -3,6 +3,7 @@ package com.laishiji.miaosha.controller;
 import com.laishiji.miaosha.controller.viewobject.ItemVO;
 import com.laishiji.miaosha.error.BusinessException;
 import com.laishiji.miaosha.response.CommonReturnType;
+import com.laishiji.miaosha.service.CacheService;
 import com.laishiji.miaosha.service.ItemService;
 import com.laishiji.miaosha.service.model.ItemModel;
 import org.joda.time.format.DateTimeFormat;
@@ -28,6 +29,9 @@ public class ItemController extends GlobalExceptionHandler{
 
     @Autowired
     private RedisTemplate redisTemplate;
+
+    @Resource(name = "cacheService")
+    private CacheService cacheService;
 
     /**
      * 创建商品接口
@@ -79,24 +83,34 @@ public class ItemController extends GlobalExceptionHandler{
     }
 
     /**
-     * 获取商品详情页，使用Redis缓存
+     * 获取商品详情页，使用本地缓存和Redis缓存
      * @return
      */
     @RequestMapping("/get")
     @ResponseBody
     public CommonReturnType getItem(@RequestParam(name = "id")Integer id){
 
-        //根据商品的id到redis获取ItemModel,记住ItemModel及其成员变量一定要实现Serializable接口
-        ItemModel itemModel = (ItemModel) redisTemplate.opsForValue().get("item_"+id);
+        ItemModel itemModel = null;
 
-        //若redis内不存在对应的ItemModel，则访问下游service
+        //1. 先取本地缓存
+        itemModel = (ItemModel)cacheService.getFromCommonCache("item_"+id);
+        //2. 若本地缓存内不存在对应的ItemModel，则访问Redis缓存
         if(itemModel == null) {
-            itemModel = itemService.getItemById(id);
-            //设置itemModel到Redis内
-            redisTemplate.opsForValue().set("item_"+id,itemModel);
-            //设置缓存失效时间
-            redisTemplate.expire("item_"+id, 10, TimeUnit.MINUTES);
+            //2.1. 根据商品的id到redis获取ItemModel,记住ItemModel及其成员变量一定要实现Serializable接口
+            itemModel = (ItemModel) redisTemplate.opsForValue().get("item_"+id);
+
+            //2.2. 若redis内不存在对应的ItemModel，则访问下游service
+            if(itemModel == null) {
+                itemModel = itemService.getItemById(id);
+                //设置itemModel到Redis内
+                redisTemplate.opsForValue().set("item_"+id,itemModel);
+                //设置缓存失效时间
+                redisTemplate.expire("item_"+id, 10, TimeUnit.MINUTES);
+            }
+            //2.3. 设置itemModel到本地缓存
+            cacheService.setCommonCache("item_"+id,itemModel);
         }
+
         ItemVO itemVO = convertVOFromModel(itemModel);
         return CommonReturnType.create(itemVO);
     }
